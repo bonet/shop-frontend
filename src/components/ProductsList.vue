@@ -1,7 +1,7 @@
 <template>
   <div class="products-list">
     <el-row>
-      <el-col :span="8" v-for="product in pagedProducts" :key="product.id">
+      <el-col :span="8" v-for="product in products" :key="product.id">
         <div class="grid-content bg-purple">{{product.name}}</div>
       </el-col>
     </el-row>
@@ -14,32 +14,21 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'ProductsList',
   data () {
     return {
-      products: [
-        {id: 1, name: 'book 1'},
-        {id: 2, name: 'book 2'},
-        {id: 3, name: 'book 3'},
-        {id: 4, name: 'book 4'},
-        {id: 5, name: 'book 5'},
-        {id: 6, name: 'book 6'},
-        {id: 7, name: 'book 7'},
-        {id: 8, name: 'book 8'},
-        {id: 9, name: 'book 9'},
-        {id: 10, name: 'book 10'},
-        {id: 11, name: 'book 11'}
-      ],
+      products: [],
       currentPage: 1,
-      pageSize: 6
+      pageSize: 6,
+      totalProductCount: 0
     }
   },
+  mounted () {
+    this.retrieveProducts()
+  },
   computed: {
-    totalProductCount: function () {
-      console.log(this.products.length)
-      return this.products.length
-    },
     indexStart: function () {
       return (this.pageSize * (this.currentPage - 1))
     },
@@ -53,6 +42,14 @@ export default {
   methods: {
     handleCurrentChange (val) {
       this.currentPage = val
+      this.retrieveProducts()
+    },
+    retrieveProducts () {
+      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=asc`)
+      .then(response => {
+        this.products = response.data.data
+        this.totalProductCount = response.data.recordsFiltered
+      })
     }
   }
 }
