@@ -57,7 +57,7 @@ export default {
       ],
       category: '',
       priceRange: '',
-      sortDirection: 'asc',
+      sortDirection: '',
       currentPage: 1,
       pageSize: 6,
       totalProductCount: 0
@@ -105,7 +105,10 @@ export default {
       if (this.priceRange) {
         searchString += `&price_range=${this.priceRange}`
       }
-      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=${this.sortDirection}${searchString}`)
+      if (this.sortDirection) {
+        searchString += `&order_by=price&sort_direction=${this.sortDirection}`
+      }
+      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}${searchString}`)
       .then(response => {
         this.products = response.data.data
         this.totalProductCount = response.data.recordsFiltered
