@@ -1,11 +1,11 @@
 <template>
   <div class="container" justify="center">
-    <el-select v-model="value" placeholder="Select Category">
+    <el-select @change="retrieveProducts" v-model="category" placeholder="Select Category">
       <el-option
-        v-for="category in categories"
-        :key="category.value"
-        :label="category.label"
-        :value="category.value">
+        v-for="cat in categories"
+        :key="cat.value"
+        :label="cat.label"
+        :value="cat.value">
       </el-option>
     </el-select>
     <el-row>
@@ -37,6 +37,7 @@ export default {
         {value: 'brushes', label: 'Brushed'},
         {value: 'lipstick', label: 'Lipstick'}
       ],
+      category: '',
       currentPage: 1,
       pageSize: 6,
       totalProductCount: 0
@@ -62,7 +63,11 @@ export default {
       this.retrieveProducts()
     },
     retrieveProducts () {
-      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=asc`)
+      var searchString = ''
+      if (this.category) {
+        searchString = `&search_category=category&search_term=${this.category}`
+      }
+      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=asc${searchString}`)
       .then(response => {
         this.products = response.data.data
         this.totalProductCount = response.data.recordsFiltered

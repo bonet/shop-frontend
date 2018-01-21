@@ -1,7 +1,8 @@
 <template>
   <div class="grid-content">
     <div class="product-image">
-      <img src="https://images.pexels.com/photos/279480/pexels-photo-279480.jpeg?w=200&auto=compress&cs=tinysrgb" />
+      <!-- This is just placeholder image //-->
+      <img src="/static/product_placeholder_image.jpeg" />
     </div>
     <div class="product-info">
       <div class="product-info"> {{product.name}} </div>
