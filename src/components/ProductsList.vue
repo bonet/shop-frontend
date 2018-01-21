@@ -17,6 +17,7 @@
           :value="p.value">
         </el-option>
       </el-select>
+      <el-button @click="changeSortDirection">Sort Price {{sortDirectionText}}</el-button>
     </div>
     <div class="container-products" justify="center">
       <el-row>
@@ -56,6 +57,7 @@ export default {
       ],
       category: '',
       priceRange: '',
+      sortDirection: 'asc',
       currentPage: 1,
       pageSize: 6,
       totalProductCount: 0
@@ -73,11 +75,26 @@ export default {
     },
     pagedProducts: function () {
       return this.products.slice(this.indexStart, this.indexEnd)
+    },
+    sortDirectionText: function () {
+      if (this.sortDirection === 'asc') {
+        return 'Down'
+      } else {
+        return 'Up'
+      }
     }
   },
   methods: {
     handleCurrentChange (val) {
       this.currentPage = val
+      this.retrieveProducts()
+    },
+    changeSortDirection () {
+      if (this.sortDirection === 'asc') {
+        this.sortDirection = 'desc'
+      } else {
+        this.sortDirection = 'asc'
+      }
       this.retrieveProducts()
     },
     retrieveProducts () {
@@ -88,7 +105,7 @@ export default {
       if (this.priceRange) {
         searchString += `&price_range=${this.priceRange}`
       }
-      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=asc${searchString}`)
+      axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=${this.sortDirection}${searchString}`)
       .then(response => {
         this.products = response.data.data
         this.totalProductCount = response.data.recordsFiltered
