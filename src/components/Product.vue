@@ -1,8 +1,10 @@
 <template>
   <div class="grid-content">
     <div class="product-image">
-      <!-- This is just placeholder image //-->
-      <img src="/static/product_placeholder_image.jpeg" />
+      <router-link :to="{ name: 'product_page', params: { id: this.product.id }}">
+        <!-- This is just placeholder image //-->
+        <img src="/static/product_placeholder_image.jpeg" />
+      </router-link>
     </div>
     <div class="product-info">
       <div class="product-info"> {{product.name}} </div>
