@@ -1,25 +1,42 @@
 <template>
-  <div class="products-list">
+  <div class="container" justify="center">
+    <el-select v-model="value" placeholder="Select Category">
+      <el-option
+        v-for="category in categories"
+        :key="category.value"
+        :label="category.label"
+        :value="category.value">
+      </el-option>
+    </el-select>
     <el-row>
       <el-col :span="8" v-for="product in products" :key="product.id">
-        <div class="grid-content bg-purple">{{product.name}}</div>
+        <product :product="product"></product>
       </el-col>
     </el-row>
 
-    <el-button>Test</el-button>
-    <el-button type="primary" :loading="true">Loading…</el-button>
-    <el-pagination @current-change="handleCurrentChange" v-bind:current-page="currentPage" v-bind:page-size="pageSize" v-bind:total="totalProductCount" layout="prev, pager, next"></el-pagination>
+    <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize" :total="totalProductCount" layout="prev, pager, next"></el-pagination>
 
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import Product from './Product.vue'
+
 export default {
   name: 'ProductsList',
+  components: {
+    'product': Product
+  },
   data () {
     return {
       products: [],
+      categories: [ // ideally this shouldn't be hardcoded
+        {value: 'makeup', label: 'Makeup'},
+        {value: 'tools', label: 'Tools'},
+        {value: 'brushes', label: 'Brushed'},
+        {value: 'lipstick', label: 'Lipstick'}
+      ],
       currentPage: 1,
       pageSize: 6,
       totalProductCount: 0
@@ -57,6 +74,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.container {
+  margin: 20px 100px;
+}
 .el-row {
   margin-bottom: 20px;
 }
@@ -66,22 +86,4 @@ export default {
 .el-col {
   border-radius: 4px;
 }
-.bg-purple-dark {
-  background: #99a9bf;
-}
-.bg-purple {
-  background: #d3dce6;
-}
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
-}
-.row-bg {
-  padding: 10px 0;
-  background-color: #f9fafc;
-}
-
 </style>
