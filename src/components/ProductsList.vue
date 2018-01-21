@@ -1,18 +1,30 @@
 <template>
-  <div class="container" justify="center">
-    <el-select @change="retrieveProducts" v-model="category" placeholder="Select Category">
-      <el-option
-        v-for="cat in categories"
-        :key="cat.value"
-        :label="cat.label"
-        :value="cat.value">
-      </el-option>
-    </el-select>
-    <el-row>
-      <el-col :span="8" v-for="product in products" :key="product.id">
-        <product :product="product"></product>
-      </el-col>
-    </el-row>
+  <div class="container">
+    <div class="container-header">
+      <el-select @change="retrieveProducts" v-model="category" placeholder="Select Category">
+        <el-option
+          v-for="cat in categories"
+          :key="cat.value"
+          :label="cat.label"
+          :value="cat.value">
+        </el-option>
+      </el-select>
+      <el-select @change="retrieveProducts" v-model="priceRange" placeholder="Select Price Range">
+        <el-option
+          v-for="p in priceRanges"
+          :key="p.value"
+          :label="p.label"
+          :value="p.value">
+        </el-option>
+      </el-select>
+    </div>
+    <div class="container-products" justify="center">
+      <el-row>
+        <el-col :span="8" v-for="product in products" :key="product.id">
+          <product :product="product"></product>
+        </el-col>
+      </el-row>
+    </div>
 
     <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize" :total="totalProductCount" layout="prev, pager, next"></el-pagination>
 
@@ -37,7 +49,13 @@ export default {
         {value: 'brushes', label: 'Brushed'},
         {value: 'lipstick', label: 'Lipstick'}
       ],
+      priceRanges: [
+        {value: '0..5000', label: '0 - $50'},
+        {value: '5000..10000', label: '$50 - $100'},
+        {value: '10000..50000', label: '$100 - $500'}
+      ],
       category: '',
+      priceRange: '',
       currentPage: 1,
       pageSize: 6,
       totalProductCount: 0
@@ -65,7 +83,10 @@ export default {
     retrieveProducts () {
       var searchString = ''
       if (this.category) {
-        searchString = `&search_category=category&search_term=${this.category}`
+        searchString += `&category=${this.category}`
+      }
+      if (this.priceRange) {
+        searchString += `&price_range=${this.priceRange}`
       }
       axios.get(`http://localhost:3000/products?start_page=${this.currentPage}&page_length=${this.pageSize}&order_by=price&sort_direction=asc${searchString}`)
       .then(response => {
